@@ -1,0 +1,15 @@
+CONFIG_DIR="/home/$(id -un)/.config"
+CONFIG=$CONFIG_DIR/remotebox.conf
+PROFILES=$CONFIG_DIR/remotebox-profiles.conf
+
+touch $CONFIG $PROFILES
+
+docker run -e XDG_RUNTIME_DIR=/tmp \
+           -e XDG_SESSION_TYPE=wayland \
+           -e WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
+           -e HOME=/home/$(id -un) \
+           -v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/tmp/$WAYLAND_DISPLAY  \
+           -v $CONFIG:$CONFIG \
+           -v $PROFILES:$PROFILES \
+           --user=$(id -u):$(id -g) \
+           thabiger/remotebox /bin/bash -c "mkdir -p /home/$(id -un) && cd && /remotebox/remotebox"
